@@ -29,7 +29,7 @@ function Userdashboard() {
   }, []);
 
   return (
-    <div style={{ backgroundImage: "url(https://i.pinimg.com/736x/c5/9f/92/c59f926ba4076b2b549525661de57643.jpg)", height: "100vh", backgroundSize: "cover", backgroundAttachment: "fixed" }}>
+    <div>
       <Usernav />
       <div style={{ marginTop: "5%" }}>
         <Row xs={1} md={3} className="g-4">

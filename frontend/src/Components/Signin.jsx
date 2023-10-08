@@ -21,23 +21,35 @@ function Signin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await axios.post('http://localhost:4000/api/login', formData);
-
-      if (response.data.message === 'Login successful') {
-        const userRole = response.data.userRole; 
-        
-
-        console.log(userRole);
-          
-        if (userRole === 'admin') {
-          alert('Login successful as Admin');
-          navigate('/add');
-        } else if (userRole === 'user') {
-          alert('Login successful ');
-          navigate('/user');
+  
+      if (response && response.data) { // Check if response and response.data are defined
+        if (response.data.message === 'Login successful') {
+          const token = response.data.token;
+          const userId = response.data.data._id;
+          const userRole = response.data.data.userRole;
+  
+          console.log(userRole);
+          console.log(token);
+          console.log(userId);
+          sessionStorage.setItem("usertoken", token);
+          sessionStorage.setItem("userId", userId);
+          sessionStorage.setItem("userRole", userRole);
+  
+          if (userRole === 'admin') {
+            alert('Login successful as Admin');
+            navigate('/admin');
+          } else if (userRole === 'user') {
+            alert('Login successful');
+            navigate('/user');
+          }
+        } else {
+          alert('Login failed: ' + response.data.message);
         }
+      } else {
+        alert('Login failed: Unexpected response from the server');
       }
     } catch (error) {
       alert('Login failed: ' + error.response.data.message);
@@ -45,7 +57,6 @@ function Signin() {
     }
   };
   
-
   return (
     <div style={{ backgroundImage: "url(https://www.seattlemag.com/sites/default/files/field/image/cinerama_1.jpg)", height: "100vh", backgroundSize: "cover", backgroundAttachment: "fixed" }}>
       <Navbar bg="transparent" variant="dark" expand="lg" className="fixed-top">

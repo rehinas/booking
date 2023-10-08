@@ -48,14 +48,14 @@ const movieSchema = new mongoose.Schema({
 
   availableSeats: {
     type: Number,
-    default: 0, // Set a default value, e.g., 0 seats available initially
+    // Set a default value, e.g., 0 seats available initially
   },
 numSeats:Number,
 date: {
   type: Date,
   default: Date.now,
 },
-// Other fields as needed for your movie information
+
 });
 
 

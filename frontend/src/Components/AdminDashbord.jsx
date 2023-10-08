@@ -1,69 +1,93 @@
 import React, { useState, useEffect } from 'react';
-import Usernav from './Usernav';
-import axios from 'axios';
+import { Button } from 'react-bootstrap';
+import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Axios from 'axios';
+import AddMovie from './Addmovie';
 
 
-function Userdashboard() {
-  const [data, setData] = useState([]);
+function Admindashboard() {
+  const [cards, setCards] = useState([]);
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const [update,setUpdate]=useState(false);
+  const [singleValue,setsignleValue]=useState([]);
 
-  const fetchData =  () => {
-      axios.get("http://localhost:4000/api/movies").then((response)=>{
-       console.log(response.data)
-        setData(response.data)
 
-      })
+  
 
+  const fetchNewPosts = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/movies');
+      const newPosts = await response.json();
+      setCards(newPosts);
+    
+    } catch (error) {
+      console.error('Error fetching new posts:', error);
+    }
   };
-  useEffect(()=>{
-    fetchData()
-  },[])
-  const reloadPage = () => {
-    window.location.reload();
+  const handleDelete = async (postId) => {
+    try {
+      await Axios.delete(`http://localhost:4000/api/movies/${postId}`);
+   
+      fetchNewPosts();
+      alert("successfully deleted")
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
   };
+  const handleUpdate = (card) => {
+    console.log("update clicked",card)
+    setUpdate(true);
+    setsignleValue(card)
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(fetchNewPosts, 5000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  let finalJSX=<div style={{ marginTop: "5%" }}>
+  <Row xs={1} md={3} className="g-4">
+    {cards.map((card) => (
+      <Col key={card.id}>
+        
+        <Card
+          className={`custom-card ${hoveredCard === card.id ? 'highlighted' : ''}`}
+          style={{ marginLeft: "10%" ,marginRight:"10%"}}
+          onMouseEnter={() => setHoveredCard(card.id)}
+          onMouseLeave={() => setHoveredCard(null)}
+        >
+          <Card.Img variant="top" src={card.image} />
+          <Card.Body>
+            <Card.Title>{card.movieName}</Card.Title>
+            <Card.Text>Category: {card.category}</Card.Text>
+            <Card.Text>Language: {card.languages}</Card.Text>
+            <Card.Text>Rating :{card.userRating}/5</Card.Text>
+            
+           
+            <div className="custom-buttons">
+           
+                <Button variant="dark" style={{ marginLeft: "8px" }} onClick={()=>handleUpdate(card)}>Update</Button>
+              
+              <Button
+                variant="dark"
+                style={{ marginLeft: "8px" }}
+                onClick={() => handleDelete(card._id)}
+              >Delete</Button>
+       
+            </div>
+          </Card.Body>
+        </Card>
+      </Col>
+    ))}
+  </Row>
+</div>
+if(update) finalJSX=<AddMovie method="put" data={singleValue}/>
 
   return (
-    <div style={{ backgroundImage: "url(https://i.pinimg.com/736x/c5/9f/92/c59f926ba4076b2b549525661de57643.jpg)", height: "100vh", backgroundSize: "cover", backgroundAttachment: "fixed" }}>
-      <Usernav />
-      <div className="container" style={{marginTop:"5%"}}>
-        <div className="row">
-          <div className="col col-12 col-sm-12 col-md-12">
-
-            <div className="row g-3">
-           {data.map(
-            (value,index)=>{
-             return    <div className="col col-12 col-sm-6 col-md-6 col-lg-6">
-             <div className="card mb-4" style={{ maxWidth: "70%" ,maxHeight:"150%"}}>
-               <div className="row g-0">
-                 <div className="col-md-4">
-                   <img src={value.image} className="img-fluid " alt="..." style={{height:"100%"}}/>
-                 </div>
-                 <div className="col-md-8">
-                   <div className="card-body">
-                     <h5 className="card-title">{value.movieName}</h5>
-                     <p className="card-text">Category:{value.category}</p>
-                     <p className="card-text">Languages:{value.languages}</p>
-                     <p className="card-text">Languages:{value._id}</p>
-                     
-                   </div>
-                   <button className="btn btn-dark"style={{marginLeft:"20px"}}>More</button>
-                   <button className="btn btn-dark" style={{marginLeft:"20px"}}>Book</button>
-                 </div>
-               </div>
-             </div>
-           </div>
-            }
-           )}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="footer-spacer" style={{ marginTop: "15%" }}>
-        <footer className="bg-dark text-light mt-3 py-2 text-center" style={{ position: "absolute", marginTop: "20%", width: "100%" }}>
-          &copy; Atropia
-        </footer>
-      </div>
-    </div>
+      finalJSX
   );
 }
-
-export default Userdashboard;
+export default Admindashboard;

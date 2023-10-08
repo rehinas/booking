@@ -57,7 +57,7 @@ const Book = () => {
           return;
         }
     
-        const response = await axios.post(`http://localhost:4000/api/${id}`, {
+        const response = await axios.post(`http://localhost:4000/api/movies/${id}`, {
           numSeats, // Send the number of selected seats as 'numSeats' instead of 'selectedSeats'
           email,
           date: selectedDate,

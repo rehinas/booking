@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {  useNavigate } from 'react-router-dom';
 
-const AddMovie = () => {
-  const [formData, setFormData] = useState({
-    movieName: '',
-    image: '',
-    category: [],
-    languages: '',
-    description: '',
-    ticketRates: '',
-    seat: '',
-    screen: [],
-    cast:''
-  });
+const AddMovie = (props) => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState(props.data);
+  console.log("method",props.method);
+  console.log("data",props.data)
+  console.log("id",props.data._id)
+   const[userToken,setuserToken]=useState(sessionStorage.getItem("usertoken"));
+  const[userId,setuserId]=useState(sessionStorage.getItem("userId"))
+  const[userRole,setuserRole]=useState(sessionStorage.getItem("userRole"))
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -41,35 +39,93 @@ const AddMovie = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    let data={
+      userId:userId,
+      token:userToken,
+      useRole:userRole,
+      movieName:formData.movieName,
+      image:formData.image,
+      category:formData.category,
+      languages:formData.languages,
+      description:formData.description,
+      ticketRates:formData.ticketRates,
+      seat:formData.seat,
+      availableSeats:formData.availableSeats,
+      screen:formData.screen,
+      cast:formData.cast
 
-    try {
-      const response = await axios.post('http://localhost:4000/api/addmovie', formData);
-
-      if (response.status === 200) {
-        alert('Movie data submitted successfully!');
-        // Clear the form
-        setFormData({
-          movieName: '',
-          image: '',
-          category: [],
-          languages: '',
-          description: '',
-          ticketRates: '',
-          seat: '',
-          screen: [],
-          cast:""
-        });
-      }
-    } catch (error) {
-      console.error('Movie form submission error:', error);
-      alert('Movie data submission failed. Please try again.');
     }
-  };
+    console.log('Data sent to server:', data);
+    
+    console.log(data._id)
+   
 
+   
+     if (props.method === 'post') {
+      
+      axios.post('http://localhost:4000/api/addmovie', data)
+  
+        .then((response) => {
+          if (response.data.message === "post added successfully") {
+            alert(response.data.message);
+            navigate('/admin');
+          } else {
+            alert("failed to add movie");
+            navigate('/admin');
+          }
+        })
+        .catch((err) => {
+          console.error('Movie addition error:', err);
+          alert("Movie addition failed. Please try again.");
+        });
+    }
+   if (props.method === 'put') {
+
+  axios.put('http://localhost:4000/api/movies/'+formData._id,data)
+    .then((response) => {
+      if (response.data.message === "Updated successfully") {
+        alert(response.data.message);
+        navigate('/admin');
+      } else {
+        alert("Movie update failed");
+      }
+    })
+    .catch((err) => {
+      console.error('Movie update error:', err);
+      alert("Movie update failed. Please try again.");
+    });
+}
+ 
+
+  };
+      
+
+
+            //'http://localhost:4000/api/addmovie', data}
+    //     .then((response) => {
+    //       // console.log('Response Data:', response.data); 
+    //       if(response.data.message==="post"){
+    //         alert("post success")
+    //       }
+          
+    //     })
+    //     .catch((err) => {
+    //       console.error('Movie addition error:', err);
+    //       alert("Movie addition failed. Please try again.");
+    //     });
+    // }
+  
+   
+    
+  
+  
   return (
+    <div>
+
     <div className="container">
+      
       <h2 className="mt-4 mb-4">Add New Movie</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -174,6 +230,17 @@ const AddMovie = () => {
           />
         </div>
         <div className="form-group">
+          <label>Available Seat</label>
+          <input
+            type="number"
+            name="availableSeats"
+            value={formData.availableSeats}
+            onChange={handleChange}
+            className="form-control"
+            required
+          />
+        </div>
+        <div className="form-group">
           <label>Cast</label>
           <input
             type="text"
@@ -216,10 +283,14 @@ const AddMovie = () => {
             </label>
           </div>
         </div>
-        <button type="submit" className="btn btn-dark">
+        <button type="submit" className="btn btn-dark" >
           Submit
         </button>
       </form>
+    </div>
+    <div className="footer-spacer"  style={{marginTop:"15%"}}><footer className="bg-dark text-light mt-3 py-2 text-center"style={{position:"absolute",marginTop:"20%",width:"100%",}}>
+        &copy; Atropia
+      </footer></div> 
     </div>
   );
 };

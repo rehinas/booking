@@ -10,15 +10,22 @@ function Adminnav() {
   });
 
   useEffect(() => {
-   
-    axios.get('/api/user')
-      .then((response) => {
-        const { name, email } = response.data;
-        setUserData({ name, email });
+    const userToken = sessionStorage.getItem('usertoken');
+    if (userToken) {
+      axios.get('http://localhost:4000/api/user', {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
       })
-      .catch((error) => {
-        console.error('Error fetching user data:', error);
-      });
+        .then((response) => {
+          console.log('API Response:', response.data); // Add this line for debugging
+          const { name, email } = response.data;
+          setUserData({ name, email });
+        })
+        .catch((error) => {
+          console.error('Error fetching user data:', error);
+        });
+    }
   }, []); 
 
   return (
@@ -27,10 +34,9 @@ function Adminnav() {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav"  >
         <Nav style={{paddingLeft:"70%"}}>
-          <Nav.Link href="#movies">Movies</Nav.Link>
-          <Nav.Link href="add">AddMovies</Nav.Link>
-          <Nav.Link href="cast">AddCast</Nav.Link>
-          <Nav.Link href="seat">Viewseat</Nav.Link>
+          <Nav.Link href="/admin">Movies</Nav.Link>
+          <Nav.Link href="/add">AddMovies</Nav.Link>
+        
         </Nav>
         <Nav className="ml-auto" style={{paddingLeft:"5%", paddingRight:"8%"}}>
           <Dropdown className="ml-auto" >

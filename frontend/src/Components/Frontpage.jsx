@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar, Container, Nav, Carousel, Image ,Form} from 'react-bootstrap';
+import { Navbar, Container, Nav, Carousel, Image } from 'react-bootstrap';
 
 const Frontpage = () => {
   const handleScroll = (id) => {
@@ -66,7 +66,7 @@ const Frontpage = () => {
           <a href="/sign" className="btn btn-outline-light">Sign in | Sign up</a>
         </Container>
       </Navbar>
-
+     <div>
       <Container id="about" className="mt-5 ">
         <h1 className='text-center'>About Atropia</h1>
         <p className='fs-4'>  Welcome to Atropia Cinema, where the silver screen lights up with magic and cinematic dreams come to life!</p>
@@ -78,36 +78,67 @@ const Frontpage = () => {
            is a memorable one.Our theater boasts state-of-the-art projection and sound systems that guarantee a pristine audiovisual experience. From the moment you step into our lobby to the final credits, we prioritize your 
            comfort and enjoyment. Our plush seating, clean facilities, and friendly staff are here to enhance your movie-going experience.</p>
       </Container>
-
-     
-        <h1 className='text-center' >Contact Us</h1>
-        <div className="container center-form ">
-        <Form >
-        <Form.Group controlId="name" className='form-outline mb-4'>
-          <Form.Label className='text-center form-control bg-secondary text-light'>ATROPIA</Form.Label>
-          
-        </Form.Group>
-        <Form.Group controlId="email" className='form-outline mb-4'>
-          <Form.Label  className='text-center form-control bg-secondary text-light'>Atropia@gmail.com</Form.Label>
-          
-        </Form.Group>
-        <Form.Group controlId="phone" className='form-outline mb-4'>
-          <Form.Label className='text-center form-control bg-secondary text-light'>9562808841</Form.Label>
-          
-        </Form.Group>
-        <Form.Group controlId="location" className='form-outline mb-4'>
-          <Form.Label className='text-center form-control bg-secondary text-light'>kalpetta,near sindhoor,wayanad</Form.Label>
-         
-        </Form.Group>
-        
-      </Form>
       </div>
-   
 
+       
+      <div className="container" id="contact">
+        <div className='row justify-content-center align-items-center' style={{ minHeight: "100vh" ,backgroundColor:"gray"}}>
+          <div className='col-md-4' style={{ boxShadow: "-1px 1px 60px 10px ", background: "rgba(0,0,0,0.4)" }}>
+            <div className="row">
+              <div className="col-md-12">
+                <h3 className="text-left fs-25" style={{ color: "white", marginTop: "35%" }}>Contact us</h3>
+                <form >
+                  <div className="form-group">
+                    <label className='label control-label fs-19px' style={{ fontWeight: "normal", marginTop: "15px", color: "white" }}>Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value="Atropia"
+                      style={{ background: "transparent", borderRadius: "0px", borderBottom: "1px solid white", marginTop: "15px", height: "40px",color:"white" }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className='label control-label fs-19px' style={{ fontWeight: "normal", marginTop: "15px", color: "white" }}>Email</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value="Atropia@gmail.com"
+                      style={{ background: "transparent", borderRadius: "0px", borderBottom: "1px solid white", marginTop: "15px", height: "40px",color:"white" }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className='label control-label fs-19px' style={{ fontWeight: "normal", marginTop: "15px", color: "white" }}>Phone Number</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value="7306662300"
+                      style={{ background: "transparent", borderRadius: "0px", borderBottom: "1px solid white", marginTop: "15px", height: "40px",color:"white" }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className='label control-label fs-19px' style={{ fontWeight: "normal", marginTop: "15px", color: "white" }}>Address</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value="kalpetta wayanad near sindhor"
+                      style={{ background: "transparent", borderRadius: "0px", borderBottom: "1px solid white", marginTop: "15px", height: "40px",color:"white" }}
+                    />
+                  </div>
+                 
+                </form>
+               
+              </div>
+            </div>
+          </div>
+        </div>
+   </div>
+   
+    <div>
       <footer className="bg-dark text-light mt-5 py-3 text-center">
         &copy; Atropia
       </footer>
-    </div>
+      </div>
+       </div>
   );
 }
 

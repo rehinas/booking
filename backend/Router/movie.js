@@ -3,26 +3,52 @@ const router = express.Router();
 const nodemailer=require('nodemailer')
 const Movie = require('../Model/movie');
 const Booking=require('../Model/Booking')
-const jwt=require('jsonwebtoken')
-
-
+const User=require('../Model/Signup')
+const jwt = require('jsonwebtoken');
 router.use(express.json());
 router.use(express.urlencoded({extended:true}))
 
-
-
-router.post('/addmovie',async(req,res)=>{
+router.post('/addmovie',  (req, res) => {
   try {
-    const item=req.body;
-  const newdata=new Movie(item);
-  const savedata=await newdata.save()
-  res.status(200).send("post successfull")
+    console.log(req.body)
+    let item=req.body;
+    const newdata = new Movie(item);
+    jwt.verify(req.body.token, 'newKey', (error, decoded) => {
+      if (decoded && decoded.email) {
+        newdata.save()
+        res.json({message:"post added successfully"})
+      }
+      else{
+        res.json({message:"unautherized user"})
+      }
+    }
+    )
   } catch (error) {
-    res.status(400).send("post error")
-    console.log(error)
+    console.error('Post Error:', error);
+    res.status(400).send("Post error");
   }
+});
 
-})
+router.put('/movies/:id', async (req, res) => {
+  try {
+    const movieId = req.params.id;
+    const updatedData = req.body;
+    
+    const movie = await Movie.findByIdAndUpdate(movieId, updatedData, { new: true });
+
+    if (!movie) {
+      return res.status(404).json({ message: 'Movie not found' });
+    }
+
+    res.json({ message: 'Updated successfully' });
+  } catch (error) {
+    console.error('Error updating movie by ID:', error);
+    res.status(500).json({ error: 'Failed to update movie details.' });
+  }
+});
+
+
+
 router.put('/movies/:id/rate', async (req, res) => {
   try {
     const movieId = req.params.id;
@@ -62,7 +88,7 @@ router.get('/movies', async (req, res) => {
   }
 });
 
-
+//http://localhost:4000/api/movies/6512b06e4b21b20dafea2bba
 
 router.get('/movies/:id', async (req, res) => {
   try {
@@ -137,11 +163,17 @@ async function assignSeats(numSeats, alreadyAssignedSeats) {
   return assignedSeats;
 }
 
+const mongoose = require('mongoose');
+ // Import your Movie model here
 
-
-router.post('/:id', async (req, res) => {
+router.post('/movies/:id', async (req, res) => {
   const { email, numSeats, date } = req.body;
   const movieId = req.params.id;
+
+  // Validate that movieId is a valid ObjectId
+  // if (!mongoose.Types.ObjectId.isValid(movieId)) {
+  //   return res.status(400).json({ error: 'Invalid movie ID' });
+  // }
 
   try {
     const movie = await Movie.findById(movieId);
@@ -184,9 +216,9 @@ router.post('/:id', async (req, res) => {
       to: email,
       subject: 'Booking Confirmation',
       text: `Thank you for booking ${numSeats} tickets for ${movie.movieName}. Your booking details: Seats: ${adminAssignedSeats.join(', ')} Movie: ${movie.movieName} Date: ${date}`,
-     
     };
-    console.log(adminAssignedSeats)
+
+    console.log(adminAssignedSeats);
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -202,6 +234,11 @@ router.post('/:id', async (req, res) => {
     res.status(500).json({ success: false, message: 'Error fetching movie details' });
   }
 });
+
+
+
+
+  
 
 
 
